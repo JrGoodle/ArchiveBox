@@ -10,8 +10,14 @@ set -o nounset
 set -o pipefail
 IFS=$'\n'
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && cd .. && pwd )"
+cd "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/.."
 
-source "$DIR/.venv/bin/activate"
+if [[ "${PIPENV_ACTIVE:-0}" -eq 1 ]]; then
+    echo 'Using pipenv shell'
+else
+  source "$PWD/.venv/bin/activate"
+fi
+
+export TIMEZONE='UTC'
 
 pytest -s --basetemp=tests/out --ignore=archivebox/vendor --ignore=deb_dist --ignore=pip_dist --ignore=brew_dist
